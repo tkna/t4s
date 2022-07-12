@@ -1,0 +1,24 @@
+# permissions for end users to edit boards.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: board-editor-role
+rules:
+- apiGroups:
+  - tetris.tkna.net
+  resources:
+  - boards
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - tetris.tkna.net
+  resources:
+  - boards/status
+  verbs:
+  - get

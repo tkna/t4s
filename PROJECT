@@ -1,0 +1,16 @@
+domain: tkna.net
+layout:
+- go.kubebuilder.io/v3
+projectName: tetris-operator
+repo: github.com/tkna/tetris-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: tkna.net
+  group: tetris
+  kind: Board
+  path: github.com/tkna/tetris-operator/api/v1
+  version: v1
+version: "3"

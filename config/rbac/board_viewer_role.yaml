@@ -1,0 +1,20 @@
+# permissions for end users to view boards.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: board-viewer-role
+rules:
+- apiGroups:
+  - tetris.tkna.net
+  resources:
+  - boards
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - tetris.tkna.net
+  resources:
+  - boards/status
+  verbs:
+  - get
