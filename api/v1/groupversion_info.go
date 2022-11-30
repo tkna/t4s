@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 // Package v1 contains API Schema definitions for the t4s v1 API group
-//+kubebuilder:object:generate=true
-//+groupName=t4s.tkna.net
+// +kubebuilder:object:generate=true
+// +groupName=t4s.tkna.net
 package v1
 
 import (

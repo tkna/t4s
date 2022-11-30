@@ -4,7 +4,7 @@ on:
     branches:
       - '**'
 env:
-  go-version: 1.18
+  go-version: 1.19
 jobs:
   build:
     name: Build

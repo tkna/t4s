@@ -84,7 +84,7 @@ func (mino CurrentMino) DeepCopy() CurrentMino {
 }
 
 // BoardState defines the state of Board
-//+kubebuilder:validation:Enum=Playing;GameOver
+// +kubebuilder:validation:Enum=Playing;GameOver
 type BoardState string
 
 const (
