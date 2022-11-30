@@ -1,94 +1,159 @@
-# tetris-operator
-// TODO(user): Add simple overview of use/purpose
+[![CI](https://github.com/tkna/t4s/actions/workflows/ci.yml/badge.svg)](https://github.com/tkna/t4s/actions/workflows/ci.yml)
+[![GitHub release](https://img.shields.io/github/release/tkna/t4s.svg?sort=semver&maxAge=60)](https://github.com/tkna/t4s/releases)
+
+# t4s
+`t4s` is a simple tetris-like game implemented by Kubernetes controllers.
+Cluster users can play t****s in any time just by deploying a `T4s` resource.
+
+<img src="t4s.png" width="400">
 
 ## Description
-// TODO(user): An in-depth paragraph about your project and overview of use
+This is not a tetris-like application on the cluster, but the composite of CRDs and controllers interact each other to run t****s.
+All the information, such as the status of the game field and the descending block currently under control, are stored in custom resources and updated by reconciliation of the controllers. 
 
-## Getting Started
-You’ll need a Kubernetes cluster to run against. You can use [KIND](https://sigs.k8s.io/kind) to get a local cluster for testing, or run against a remote cluster.
-**Note:** Your controller will automatically use the current context in your kubeconfig file (i.e. whatever cluster `kubectl cluster-info` shows).
+## Disclaimer
+`t4s` may crush or slow down your cluster due to a heavy load on the control plane, especially if `T4s` resource is deployed on many namespaces.
+Do not deploy it to a production environment.
 
-### Running on the cluster
-1. Install Instances of Custom Resources:
+## Quick start
+1. Clone this repository
+2. Create a kind cluster
+```
+$ make start
+```
+3. Deploy cert-manager
+```
+$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
+```
+4. Deploy t4s controllers
+```
+$ kubectl apply -f https://github.com/tkna/t4s/releases/latest/download/t4s.yaml
+```
+3. Deploy a `T4s` resource:
+```
+$ kubectl apply -f config/samples/t4s.yaml
+```
+4. Access `http://localhost:8080/` by your web browser
 
-```sh
-kubectl apply -f config/samples/
+
+## Running on your cluster
+
+### 1. Deploy cert-manager
+```
+$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
 ```
 
-2. Build and push your image to the location specified by `IMG`:
-	
-```sh
-make docker-build docker-push IMG=<some-registry>/tetris-operator:tag
+### 2. Deploy t4s controllers
 ```
-	
-3. Deploy the controller to the cluster with the image specified by `IMG`:
-
-```sh
-make deploy IMG=<some-registry>/tetris-operator:tag
+$ kubectl apply -f https://github.com/tkna/t4s/releases/latest/download/t4s.yaml
 ```
 
-### Uninstall CRDs
-To delete the CRDs from the cluster:
+### 3. Deploy T4s resource
 
-```sh
-make uninstall
+Create and deploy a manifest like below:
+
+- t4s.yaml
+```
+apiVersion: t4s.tkna.net/v1
+kind: T4s
+metadata:
+  name: t4s-sample
+spec:
+  nodePort: 30080
+```
+```
+$ kubectl apply -f t4s.yaml
 ```
 
-### Undeploy controller
-UnDeploy the controller to the cluster:
+By specifying `nodePort`, dedicated port will be exposed to the outside the cluster by the service `t4s-app`.
+If you are using a local kind cluster, `extraPortMappings` is required to be set in advance to access the nodeport from the localhost.
 
-```sh
-make undeploy
+If you don't specify `nodePort` like below, an ephemeral port is automatically exposed by Kubernetes.
+```
+apiVersion: t4s.tkna.net/v1
+kind: T4s
+metadata:
+  name: t4s-sample
+spec: {}
 ```
 
-## Contributing
-// TODO(user): Add detailed information on how you would like others to contribute to this project
+If you are using a k8s cluster which has `type: LoadBalancer` for instance EKS/GKE, `type: LoadBalancer` is also available by specifying `serviceType: LoadBalancer` like below:
+```
+apiVersion: t4s.tkna.net/v1
+kind: T4s
+metadata:
+  name: t4s-sample
+spec:
+  serviceType: LoadBalancer
+  loadBalancerSourceRanges:           # loadBalancerSourceRanges is also available
+  - XXX.XXX.XXX.XXX/YY                # range of your source IP
+```
+For EKS, only CLB(Classic Load Balancer) is supported at this point.
+
+### 4. Look up the LoadBalancer IP or DNS name (if needed)
+- EKS
+
+Get the external-ip (DNS name) of the service "t4s-app".
+```
+$ kubectl get svc t4s-app
+NAME      TYPE           CLUSTER-IP       EXTERNAL-IP                                              PORT(S)          AGE
+t4s-app   LoadBalancer   10.100.195.228   xxxxxxxxxxxxxxxxxxxxx.ap-northeast-1.elb.amazonaws.com   8000:30949/TCP   20s
+```
+
+- GKE
+
+Get the external-ip of service "t4s-app".
+```
+$ kubectl get svc t4s-app
+NAME      TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)          AGE
+t4s-app   LoadBalancer   10.36.10.168   XXX.XXX.XXX.XXX   8000:32175/TCP   15m
+```
+
+### 5. Access from the browser
+- Access `http://<your-ip-or-DNS-name>:8000/` 
+- Click "New Game"
+
+## Operation
+```
+Left arrow: left
+Right arrow: right
+Up arrow: rotate
+Down arrow: down (soft drop)
+Space key: drop (hard drop)
+```
+
+## Limitation
+- Only 1 `T4s` resource in a namespace
+- No HTTPS support
+
+## Development
+
+- Create a kind cluster:
+```
+$ make start
+```
+
+- Launch tilt:
+```
+$ tilt up
+```
+
+- Tear down the kind cluster:
+```
+$ make stop
+```
+
+## Testing
+### Test controllers
+```
+$ make test
+```
+
+### E2E Test
+```
+$ cd e2e
+$ make test
+```
 
 ### How it works
-This project aims to follow the Kubernetes [Operator pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/)
-
-It uses [Controllers](https://kubernetes.io/docs/concepts/architecture/controller/) 
-which provides a reconcile function responsible for synchronizing resources untile the desired state is reached on the cluster 
-
-### Test It Out
-1. Install the CRDs into the cluster:
-
-```sh
-make install
-```
-
-2. Run your controller (this will run in the foreground, so switch to a new terminal if you want to leave it running):
-
-```sh
-make run
-```
-
-**NOTE:** You can also run this in one step by running: `make install run`
-
-### Modifying the API definitions
-If you are editing the API definitions, generate the manifests such as CRs or CRDs using:
-
-```sh
-make manifests
-```
-
-**NOTE:** Run `make --help` for more information on all potential `make` targets
-
-More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
-
-## License
-
-Copyright 2022.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
+See [docs](./docs) directory.

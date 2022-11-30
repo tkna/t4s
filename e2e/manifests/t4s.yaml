@@ -1,0 +1,8 @@
+apiVersion: t4s.tkna.net/v1
+kind: T4s
+metadata:
+  name: t4s-1
+spec:
+  width: 10
+  height: 20
+  wait: 1000

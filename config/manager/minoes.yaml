@@ -1,0 +1,118 @@
+apiVersion: t4s.tkna.net/v1
+kind: Mino
+metadata:
+  name: mino-i
+spec:
+  minoId: 1
+  coords:
+  - "x": -1
+    "y": 0
+  - "x": 0
+    "y": 0
+  - "x": 1
+    "y": 0
+  - "x": 2
+    "y": 0
+  color: "#a0d8ef"
+---
+apiVersion: t4s.tkna.net/v1
+kind: Mino
+metadata:
+  name: mino-o
+spec:
+  minoId: 2
+  coords:
+  - "x": 0
+    "y": 0
+  - "x": 1
+    "y": 0
+  - "x": 0
+    "y": 1
+  - "x": 1
+    "y": 1
+  color: "#ffdb4f"
+---
+apiVersion: t4s.tkna.net/v1
+kind: Mino
+metadata:
+  name: mino-s
+spec:
+  minoId: 3
+  coords:
+  - "x": -1
+    "y": 0
+  - "x": 0
+    "y": 0
+  - "x": 0
+    "y": 1
+  - "x": 1
+    "y": 1
+  color: "#88cb7f"
+---
+apiVersion: t4s.tkna.net/v1
+kind: Mino
+metadata:
+  name: mino-z
+spec:
+  minoId: 4
+  coords:
+  - "x": -1
+    "y": 1
+  - "x": 0
+    "y": 1
+  - "x": 0
+    "y": 0
+  - "x": 1
+    "y": 0
+  color: "#f0908d"
+---
+apiVersion: t4s.tkna.net/v1
+kind: Mino
+metadata:
+  name: mino-j
+spec:
+  minoId: 5
+  coords:
+  - "x": -1
+    "y": 1
+  - "x": -1
+    "y": 0
+  - "x": 0
+    "y": 0
+  - "x": 1
+    "y": 0
+  color: "#5383c3"
+---
+apiVersion: t4s.tkna.net/v1
+kind: Mino
+metadata:
+  name: mino-l
+spec:
+  minoId: 6
+  coords:
+  - "x": -1
+    "y": 0
+  - "x": 0
+    "y": 0
+  - "x": 1
+    "y": 0
+  - "x": 1
+    "y": 1
+  color: "#f6ad49"
+---
+apiVersion: t4s.tkna.net/v1
+kind: Mino
+metadata:
+  name: mino-t
+spec:
+  minoId: 7
+  coords:
+  - "x": -1
+    "y": 0
+  - "x": 0
+    "y": 0
+  - "x": 0
+    "y": 1
+  - "x": 1
+    "y": 0
+  color: "#a59aca"

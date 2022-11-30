@@ -5,7 +5,7 @@ metadata:
   name: board-viewer-role
 rules:
 - apiGroups:
-  - tetris.tkna.net
+  - t4s.tkna.net
   resources:
   - boards
   verbs:
@@ -13,7 +13,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - tetris.tkna.net
+  - t4s.tkna.net
   resources:
   - boards/status
   verbs:

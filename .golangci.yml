@@ -1,0 +1,17 @@
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - forbidigo
+    - gocognit
+    - gocyclo
+    - godot
+    - gosimple
+    - gofmt
+    - ineffassign
+    - revive
+    - staticcheck
+    - unparam
+    - unused
+run:
+  timeout: 5m

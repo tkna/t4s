@@ -5,9 +5,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: boards.tetris.tkna.net
+  name: boards.t4s.tkna.net
 spec:
-  group: tetris.tkna.net
+  group: t4s.tkna.net
   names:
     kind: Board
     listKind: BoardList
@@ -22,10 +22,13 @@ spec:
     - jsonPath: .spec.height
       name: HEIGHT
       type: integer
+    - jsonPath: .spec.wait
+      name: WAIT
+      type: integer
     name: v1
     schema:
       openAPIV3Schema:
-        description: Board is the Schema for the boards API
+        description: Board is the Schema for the boards API.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -40,24 +43,41 @@ spec:
           metadata:
             type: object
           spec:
-            description: BoardSpec defines the desired state of Board
+            description: BoardSpec defines the desired state of Board.
             properties:
               height:
-                description: Height of the board
+                default: 20
+                description: 'Height of the board (default: 20)'
+                minimum: 3
+                type: integer
+              state:
+                default: GameOver
+                description: Desired state of the board. Possible values are "Playing"
+                  and "GameOver".
+                enum:
+                - Playing
+                - GameOver
+                type: string
+              wait:
+                default: 1000
+                description: 'Wait time when a mino falls in millisec (default: 1000).
+                  The lower the value, the faster the falling speed. This value is
+                  inherited by Cron.'
+                minimum: 0
                 type: integer
               width:
-                description: Width of the board
+                default: 11
+                description: 'Width of the board (default: 11)'
+                minimum: 3
                 type: integer
-            required:
-            - height
-            - width
             type: object
           status:
-            description: BoardStatus defines the observed state of Board
+            description: BoardStatus defines the observed state of Board.
             properties:
               currentMino:
                 description: Current Mino Data
                 items:
+                  description: CurrentMino stores the current mino information.
                   properties:
                     absoluteCoords:
                       items:
@@ -95,6 +115,13 @@ spec:
                     type: integer
                   type: array
                 type: array
+              state:
+                description: Current state of the board. Possible values are "Playing"
+                  and "GameOver".
+                enum:
+                - Playing
+                - GameOver
+                type: string
             type: object
         type: object
     served: true

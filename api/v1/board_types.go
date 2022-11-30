@@ -20,53 +20,85 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
-// BoardSpec defines the desired state of Board
+// BoardSpec defines the desired state of Board.
 type BoardSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// Width of the board (default: 11)
+	//+kubebuilder:validation:Minimum=3
+	//+kubebuilder:default=11
+	Width int `json:"width,omitempty"`
 
-	// Width of the board
-	//+kubebuilder:validation:Required
-	Width uint `json:"width"`
+	// Height of the board (default: 20)
+	//+kubebuilder:validation:Minimum=3
+	//+kubebuilder:default=20
+	Height int `json:"height,omitempty"`
 
-	// Height of the board
-	//+kubebuilder:validation:Required
-	Height uint `json:"height"`
+	// Wait time when a mino falls in millisec (default: 1000). The lower the value, the faster the falling speed. This value is inherited by Cron.
+	//+kubebuilder:validation:Minimum=0
+	//+kubebuilder:default=1000
+	Wait int `json:"wait,omitempty"`
+
+	// Desired state of the board. Possible values are "Playing" and "GameOver".
+	//+kubebuilder:default="GameOver"
+	State BoardState `json:"state,omitempty"`
 }
 
-// BoardStatus defines the observed state of Board
+// BoardStatus defines the observed state of Board.
 type BoardStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-	
 	// Board Data
-	Data [][]uint 	  `json:"data,omitempty"`
+	Data [][]int `json:"data,omitempty"`
 
 	// Current Mino Data
-	CurrentMino []Mino  `json:"currentMino,omitempty"`
+	CurrentMino []CurrentMino `json:"currentMino,omitempty"`
+
+	// Current state of the board. Possible values are "Playing" and "GameOver".
+	State BoardState `json:"state,omitempty"`
 }
 
 type Coord struct {
-	X int	`json:"x,omitempty"`
-	Y int	`json:"y,omitempty"`
+	X int `json:"x,omitempty"`
+	Y int `json:"y,omitempty"`
 }
 
-type Mino struct {
-	MinoId uint  `json:"minoId,omitempty"`
-	Center Coord `json:"center,omitempty"`
-	RelativeCoords []Coord  `json:"relativeCoords,omitempty"`
-	AbsoluteCoords []Coord  `json:"absoluteCoords,omitempty"`
+// CurrentMino stores the current mino information.
+type CurrentMino struct {
+	MinoID         int     `json:"minoId,omitempty"`
+	Center         Coord   `json:"center,omitempty"`
+	RelativeCoords []Coord `json:"relativeCoords,omitempty"`
+	AbsoluteCoords []Coord `json:"absoluteCoords,omitempty"`
 }
+
+func (mino CurrentMino) DeepCopy() CurrentMino {
+	newMino := CurrentMino{
+		MinoID:         mino.MinoID,
+		Center:         Coord{X: mino.Center.X, Y: mino.Center.Y},
+		RelativeCoords: []Coord{},
+		AbsoluteCoords: []Coord{},
+	}
+	for _, v := range mino.RelativeCoords {
+		newMino.RelativeCoords = append(newMino.RelativeCoords, Coord{X: v.X, Y: v.Y})
+	}
+	for _, v := range mino.AbsoluteCoords {
+		newMino.AbsoluteCoords = append(newMino.AbsoluteCoords, Coord{X: v.X, Y: v.Y})
+	}
+	return newMino
+}
+
+// BoardState defines the state of Board
+//+kubebuilder:validation:Enum=Playing;GameOver
+type BoardState string
+
+const (
+	Playing  = BoardState("Playing")
+	GameOver = BoardState("GameOver")
+)
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 //+kubebuilder:printcolumn:name="WIDTH",type="integer",JSONPath=".spec.width"
 //+kubebuilder:printcolumn:name="HEIGHT",type="integer",JSONPath=".spec.height"
+//+kubebuilder:printcolumn:name="WAIT",type="integer",JSONPath=".spec.wait"
 
-// Board is the Schema for the boards API
+// Board is the Schema for the boards API.
 type Board struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -77,7 +109,7 @@ type Board struct {
 
 //+kubebuilder:object:root=true
 
-// BoardList contains a list of Board
+// BoardList contains a list of Board.
 type BoardList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`

@@ -1,0 +1,24 @@
+# permissions for end users to edit minoes.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: mino-editor-role
+rules:
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - minoes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - minoes/status
+  verbs:
+  - get

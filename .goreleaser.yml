@@ -1,0 +1,19 @@
+project_name: t4s
+before:
+  hooks:
+    - make release-manifests-build
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  skip: true
+
+release:
+  github:
+    owner: tkna
+    name: t4s
+  prerelease: auto
+  name_template: "Release {{ .Tag }}"
+  extra_files:
+    - glob: build/t4s.yaml

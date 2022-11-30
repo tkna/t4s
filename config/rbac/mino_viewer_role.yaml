@@ -1,0 +1,20 @@
+# permissions for end users to view minoes.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: mino-viewer-role
+rules:
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - minoes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - minoes/status
+  verbs:
+  - get

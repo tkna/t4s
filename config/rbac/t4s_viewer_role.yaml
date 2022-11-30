@@ -1,0 +1,20 @@
+# permissions for end users to view t4s.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: t4s-viewer-role
+rules:
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - t4s
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - t4s/status
+  verbs:
+  - get

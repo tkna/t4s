@@ -1,0 +1,10 @@
+resources:
+  - ../default
+
+images:
+- name: ghcr.io/tkna/t4s-controller
+  newName: t4s-controller
+  newTag: dev
+
+patchesStrategicMerge:
+  - ./app-config.yaml

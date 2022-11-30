@@ -1,0 +1,56 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*#button_wrapper {
+  display: flex;
+  justify-content: center;
+}*/
+
+/* button_wrapper */
+.button_wrapper a {
+  background: #eee;
+  border-radius: 50px;
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0 auto;
+  max-width: 260px;
+  padding: 10px 25px;
+  color: #313131;
+  transition: 0.3s ease-in-out;
+  font-weight: 500;
+}
+.button_wrapper a:hover {
+  background: #313131;
+  color: #FFF;
+}
+/*.button_wrapper a:after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-top: 3px solid #313131;
+  border-right: 3px solid #313131;
+  transform: rotate(45deg) translateY(-50%);
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  border-radius: 1px;
+  transition: 0.3s ease-in-out;
+}*/
+.button_wrapper a:hover:after {
+  border-color: #FFF;
+}
+
+body::-webkit-scrollbar {  /* Chrome, Safari 対応 */
+  display:none;
+}

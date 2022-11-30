@@ -28,11 +28,12 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	tetrisv1 "github.com/tkna/tetris-operator/api/v1"
-	"github.com/tkna/tetris-operator/controllers"
+	t4sv1 "github.com/tkna/t4s/api/v1"
+	"github.com/tkna/t4s/controllers"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -44,7 +45,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
-	utilruntime.Must(tetrisv1.AddToScheme(scheme))
+	utilruntime.Must(t4sv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -78,11 +79,35 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Not to use client cache
+	boardClient, err := client.New(ctrl.GetConfigOrDie(), client.Options{Scheme: scheme})
+	if err != nil {
+		setupLog.Error(err, "unable to get client for board")
+		os.Exit(1)
+	}
 	if err = (&controllers.BoardReconciler{
-		Client: mgr.GetClient(),
+		Client: boardClient,
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Board")
+		os.Exit(1)
+	}
+	if err = (&controllers.T4sReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "T4s")
+		os.Exit(1)
+	}
+	if err = (&controllers.CronReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Cron")
+		os.Exit(1)
+	}
+	if err = t4sv1.SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "T4s")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

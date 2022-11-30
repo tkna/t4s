@@ -1,0 +1,102 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  name: t4s.t4s.tkna.net
+spec:
+  group: t4s.tkna.net
+  names:
+    kind: T4s
+    listKind: T4sList
+    plural: t4s
+    singular: t4s
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.width
+      name: WIDTH
+      type: integer
+    - jsonPath: .spec.height
+      name: HEIGHT
+      type: integer
+    - jsonPath: .spec.wait
+      name: WAIT
+      type: integer
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: T4s is the Schema for the T4s API.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: T4sSpec defines the desired state of T4s.
+            properties:
+              height:
+                default: 20
+                description: 'Height of the board (default: 20). This value is inherited
+                  by Board.'
+                maximum: 30
+                minimum: 4
+                type: integer
+              loadBalancerIP:
+                description: Specifies LoadBalancerIP value when serviceType is "LoadBalancer".
+                type: string
+              loadBalancerSourceRanges:
+                description: Specifies LoadBalancerSourceRanges when serviceType is
+                  "LoadBalancer".
+                items:
+                  type: string
+                type: array
+              nodePort:
+                description: Specifies NodePort value when serviceType is "NodePort".
+                  If not specified, it is allocated automatically by Kubernetes' NodePort
+                  mechanism.
+                format: int32
+                type: integer
+              serviceType:
+                description: 'Type of the Service to which a user accesses to (default:
+                  NodePort). Supported values are "NodePort" and "LoadBalancer".'
+                type: string
+              wait:
+                default: 1000
+                description: 'Wait time when a mino falls in millisec (default: 1000).
+                  The lower the value, the faster the falling speed. This value is
+                  inherited by Board and Cron.'
+                minimum: 200
+                type: integer
+              width:
+                default: 11
+                description: 'Width of the board (default: 10). This value is inherited
+                  by Board.'
+                maximum: 20
+                minimum: 4
+                type: integer
+            type: object
+          status:
+            description: T4sStatus defines the observed state of T4s.
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

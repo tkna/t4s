@@ -1,0 +1,24 @@
+# permissions for end users to edit t4s.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: t4s-editor-role
+rules:
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - t4s
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - t4s/status
+  verbs:
+  - get

@@ -1,0 +1,71 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  name: minoes.t4s.tkna.net
+spec:
+  group: t4s.tkna.net
+  names:
+    kind: Mino
+    listKind: MinoList
+    plural: minoes
+    singular: mino
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: Mino is the Schema for the minoes API.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: MinoSpec defines the desired state of Mino.
+            properties:
+              color:
+                description: Color of the Mino. It must be a string that Javascript
+                  recognizes as color, for instance "blue", "#0000FF" or "rgb(0, 0,
+                  255)".
+                type: string
+              coords:
+                description: (Relative) coordinates of the Mino
+                items:
+                  properties:
+                    x:
+                      type: integer
+                    "y":
+                      type: integer
+                  type: object
+                type: array
+              minoId:
+                description: Id of the Mino. It must be greater than or equal to 1,
+                  as 0 is treated as a blank cell on the board.
+                type: integer
+            type: object
+          status:
+            description: MinoStatus defines the observed state of Mino.
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

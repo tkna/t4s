@@ -1,7 +1,0 @@
-apiVersion: tetris.tkna.net/v1
-kind: Board
-metadata:
-  name: board-sample
-spec:
-  width: 10
-  height: 20

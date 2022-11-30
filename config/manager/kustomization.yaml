@@ -1,5 +1,6 @@
 resources:
 - manager.yaml
+- app-config.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
@@ -8,3 +9,6 @@ configMapGenerator:
 - name: manager-config
   files:
   - controller_manager_config.yaml
+- name: mino-config
+  files:
+  - minoes.yaml

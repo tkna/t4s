@@ -31,7 +31,7 @@ spec:
         - /manager
         args:
         - --leader-elect
-        image: controller:latest
+        image: ghcr.io/tkna/t4s-controller:latest
         imagePullPolicy: IfNotPresent
         name: manager
         securityContext:
@@ -57,5 +57,18 @@ spec:
           requests:
             cpu: 10m
             memory: 64Mi
+        envFrom:
+          - configMapRef:
+              name: t4s-app-config
+        volumeMounts:
+          - name: mino-config
+            mountPath: /conf
+      volumes:
+        - name: mino-config
+          configMap:
+            name: mino-config
+            items:
+              - key: minoes.yaml
+                path: minoes.yaml
       serviceAccountName: controller-manager
       terminationGracePeriodSeconds: 10

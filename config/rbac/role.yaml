@@ -6,7 +6,68 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - tetris.tkna.net
+  - ""
+  resources:
+  - serviceaccounts
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  - roles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - actions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - t4s.tkna.net
   resources:
   - boards
   verbs:
@@ -18,15 +79,79 @@ rules:
   - update
   - watch
 - apiGroups:
-  - tetris.tkna.net
+  - t4s.tkna.net
   resources:
   - boards/finalizers
   verbs:
   - update
 - apiGroups:
-  - tetris.tkna.net
+  - t4s.tkna.net
   resources:
   - boards/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - crons
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - crons/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - crons/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - minoes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - t4s
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - t4s/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - t4s.tkna.net
+  resources:
+  - t4s/status
   verbs:
   - get
   - patch
