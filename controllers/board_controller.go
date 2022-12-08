@@ -53,6 +53,7 @@ func (r *BoardReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	err := r.Get(ctx, req.NamespacedName, &board)
 	if errors.IsNotFound(err) {
 		logger.Error(err, "Board not found", "name", req.NamespacedName)
+		RemovedRowsVec.DeleteLabelValues(req.NamespacedName.Namespace)
 		return ctrl.Result{}, nil
 	}
 	if err != nil {
@@ -193,7 +194,7 @@ func moveCurrentMino(ctx context.Context, board *t4sv1.Board, op string) {
 			for _, coord := range board.Status.CurrentMino[0].AbsoluteCoords {
 				board.Status.Data[coord.Y][coord.X] = board.Status.CurrentMino[0].MinoID
 			}
-			checkRemoveLines(ctx, board)
+			checkRemoveRows(ctx, board)
 			board.Status.CurrentMino = nil
 			logger.Info("CurrentMino landed successfully")
 		} else {
@@ -243,40 +244,40 @@ func moveCurrentMino(ctx context.Context, board *t4sv1.Board, op string) {
 			board.Status.Data[coord.Y][coord.X] = board.Status.CurrentMino[0].MinoID
 		}
 		board.Status.CurrentMino[0] = minoFrom
-		// "drop" does not fix the current mino and delegate it to "down" to get time to render when the line is full
+		// "drop" does not fix the current mino and delegate it to "down" to get time to render when the row is completed
 	}
 
 	logger.Info("move CurrentMino successfully")
 }
 
-func checkRemoveLines(ctx context.Context, board *t4sv1.Board) {
+func checkRemoveRows(ctx context.Context, board *t4sv1.Board) {
 	logger := log.FromContext(ctx)
-	logger.Info("check and remove lines")
+	logger.Info("check and remove rows")
 
-	// Calc Ys of the lines to be removed
+	// Calc Ys of the rows to be removed
 	removeYs := make(map[int]bool)
 	for _, coord := range board.Status.CurrentMino[0].AbsoluteCoords {
 		y := coord.Y
 		if !removeYs[y] {
-			full := true
+			completed := true
 			for x := 0; x < board.Spec.Width; x++ {
 				if board.Status.Data[y][x] == 0 {
-					full = false
+					completed = false
 					break
 				}
 			}
-			if full {
+			if completed {
 				removeYs[y] = true
 			}
 		}
 	}
 
 	if len(removeYs) == 0 {
-		logger.Info("no lines to remove")
+		logger.Info("no rows to remove")
 		return
 	}
 
-	// Drop lines except the ones to be removed
+	// Drop rows except the ones to be removed
 	newY := board.Spec.Height - 1
 	for y := board.Spec.Height - 2; y >= 0; y-- {
 		if removeYs[y] {
@@ -286,7 +287,9 @@ func checkRemoveLines(ctx context.Context, board *t4sv1.Board) {
 		newY--
 	}
 
-	logger.Info("check and remove lines successfully", "removed lines", len(removeYs))
+	RemovedRowsVec.WithLabelValues(board.Namespace).Observe(float64(len(removeYs)))
+
+	logger.Info("check and remove rows successfully", "removed rows", len(removeYs))
 }
 
 func (r *BoardReconciler) reconcileAction(ctx context.Context, board *t4sv1.Board) error {

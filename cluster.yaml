@@ -12,4 +12,4 @@ kindV1Alpha4Cluster:
   - role: control-plane
     extraPortMappings:
     - containerPort: 30080
-      hostPort: 8080
+      hostPort: 18080

@@ -39,7 +39,7 @@ An Action is created by Cron(Controller) or t4s-app and consumed by Board(Contro
 graph LR;
     t4s-app-- create -->Action;
     Cron-- create -->Action;
-    Board-.watch/list.->Action;
+    Board-.watch/list/delete.->Action;
     Board--reconcile-->Board;
 ```
 

@@ -24,16 +24,18 @@ $ make start
 3. Deploy cert-manager
 ```
 $ kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
+$ kubectl -n cert-manager wait --for=condition=available --timeout=180s --all deployments
 ```
 4. Deploy t4s controllers
 ```
 $ kubectl apply -f https://github.com/tkna/t4s/releases/latest/download/t4s.yaml
+$ kubectl -n t4s-system wait --for=condition=available --timeout=180s --all deployments
 ```
 3. Deploy a `T4s` resource:
 ```
 $ kubectl apply -f config/samples/t4s.yaml
 ```
-4. Access `http://localhost:8080/` by your web browser
+4. Access `http://localhost:18080/` with your web browser
 
 
 ## Running on your cluster
@@ -41,11 +43,13 @@ $ kubectl apply -f config/samples/t4s.yaml
 ### 1. Deploy cert-manager
 ```
 $ kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
+$ kubectl -n cert-manager wait --for=condition=available --timeout=180s --all deployments
 ```
 
 ### 2. Deploy t4s controllers
 ```
 $ kubectl apply -f https://github.com/tkna/t4s/releases/latest/download/t4s.yaml
+$ kubectl -n t4s-system wait --for=condition=available --timeout=180s --all deployments
 ```
 
 ### 3. Deploy T4s resource
@@ -109,7 +113,7 @@ NAME      TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)          AGE
 t4s-app   LoadBalancer   10.36.10.168   XXX.XXX.XXX.XXX   8000:32175/TCP   15m
 ```
 
-### 5. Access from the browser
+### 5. Access with the browser
 - Access `http://<your-ip-or-DNS-name>:8000/` 
 - Click "New Game"
 
@@ -125,6 +129,12 @@ Space key: drop (hard drop)
 ## Limitation
 - Only 1 `T4s` resource in a namespace
 - No HTTPS support
+
+## Metrics
+`t4s` outputs a custom metric called `removed_rows_total_bucket` in Prometheus `histogram` format.
+This metric allows you to monitor the counts per rows removed at once (normally 1...4) by namespace.
+
+![metrics](metrics.png)
 
 ## Development
 

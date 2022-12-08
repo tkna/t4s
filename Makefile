@@ -96,6 +96,27 @@ release-manifests-build: kustomize
 	mkdir -p build
 	$(KUSTOMIZE) build config/default > build/t4s.yaml
 
+##@ Deployment
+
+ifndef ignore-not-found
+  ignore-not-found = false
+endif
+
+CERT_MANAGER_VERSION = 1.8.0
+
+.PHONY: deploy
+deploy: docker-build ## Deploy controller to the K8s cluster specified in ~/.kube/config.
+	kind load docker-image ${CONTROLLER_IMG}
+	kind load docker-image ${APP_IMG}
+	kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v$(CERT_MANAGER_VERSION)/cert-manager.yaml
+	kubectl -n cert-manager wait --for=condition=available --timeout=180s --all deployments
+	kubectl apply -k config/e2e
+	kubectl -n t4s-system wait --for=condition=available --timeout=180s --all deployments
+
+.PHONY: undeploy
+undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.
+	$(KUSTOMIZE) build config/e2e | kubectl delete --ignore-not-found=$(ignore-not-found) -f -
+
 ##@ Build Dependencies
 
 ## Location to install dependencies to

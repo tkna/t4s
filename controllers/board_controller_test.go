@@ -341,9 +341,9 @@ var _ = Describe("Board controller", func() {
 		}).Should(Succeed())
 	})
 
-	It("should remove a line successfully", func() {
+	It("should remove a row successfully", func() {
 		By("creating a namespace and a Mino")
-		nsName := "test-ns-board-remove-line"
+		nsName := "test-ns-board-remove-row"
 		ns := &corev1.Namespace{
 			ObjectMeta: metav1.ObjectMeta{
 				Name: nsName,
