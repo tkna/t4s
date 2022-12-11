@@ -258,7 +258,7 @@ func checkRemoveRows(ctx context.Context, board *t4sv1.Board) {
 	removeYs := make(map[int]bool)
 	for _, coord := range board.Status.CurrentMino[0].AbsoluteCoords {
 		y := coord.Y
-		if !removeYs[y] {
+		if _, exists := removeYs[y]; !exists {
 			completed := true
 			for x := 0; x < board.Spec.Width; x++ {
 				if board.Status.Data[y][x] == 0 {
